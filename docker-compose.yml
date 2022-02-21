@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  node-red:
+    image: nodered/node-red:latest
+    restart: always
+    container_name: kai9-node-red
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "1880:1880"
+    networks:
+      - proxy
+      - default
+    volumes:
+      - ./node-red-data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.pulse-secure.entrypoints=websecure"
+      - "traefik.http.routers.pulse-secure.rule=Host(`pulse.imkai.com`)"
+      - "traefik.http.routers.pulse-secure.service=node-red"
+      - "traefik.http.services.pulse.loadbalancer.server.port=1880"
+  influxdb:
+    image: 'influxdb:latest'
+    container_name: kai-influxdb
+    restart: always
+    networks:
+      - default
+    ports:
+        - '8086:8086'
+    volumes:
+      - ./influx-data/influxdb:/var/lib/influxdb2
+
+networks:
+  default:
+  proxy:
+    external: true
