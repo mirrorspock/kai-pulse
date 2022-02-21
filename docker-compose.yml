@@ -4,7 +4,7 @@ services:
   node-red:
     image: nodered/node-red:latest
     restart: always
-    container_name: kai9-node-red
+    container_name: kai-node-red
     environment:
       - TZ=Europe/Amsterdam
     ports:
